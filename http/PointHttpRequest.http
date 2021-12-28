@@ -1,0 +1,8 @@
+### Deposit
+POST http://localhost:8080/v1/point/deposit
+Content-Type: application/json
+
+{
+  "userId": 100,
+  "point": 10
+}
