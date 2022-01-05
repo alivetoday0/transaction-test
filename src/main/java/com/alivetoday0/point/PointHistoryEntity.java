@@ -2,6 +2,8 @@ package com.alivetoday0.point;
 
 import java.time.LocalDateTime;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,6 +31,7 @@ class PointHistoryEntity {
 
   private long parentPointHistoryId;
 
+  @Enumerated(EnumType.STRING)
   private TransactionType transactionType;
 
   private LocalDateTime createAt;
