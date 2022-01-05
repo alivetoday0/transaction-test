@@ -1,5 +1,9 @@
 # 포인트 차감을 통한 트랜잭션 확인
 
+## 실행 방법
+- TransactionTestApplication.java 파일을 실행
+- 테스트를 위한 executor.java 파일 실행 
+
 ## 기능 
 ### 입금(deposit)
 - 첫 입금이면  
