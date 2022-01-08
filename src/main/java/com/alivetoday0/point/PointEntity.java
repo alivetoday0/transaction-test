@@ -57,6 +57,13 @@ class PointEntity {
         .build();
   }
 
+  static void update(PointEntity pointEntity,
+                            long newlyBalance,
+                            long newlyPointHistoryId) {
+    pointEntity.balance = newlyBalance;
+    pointEntity.pointHistoryId = newlyPointHistoryId;
+  }
+
   static class FirstPointEntity extends PointEntity {
     FirstPointEntity(long userId, long point) {
       super(userId, point, 0, LocalDateTime.now(), LocalDateTime.now(), true);

@@ -19,6 +19,8 @@
 
 ## 테스트
 [테스트](./TransactionTest.md)
+- H2로 serializable 레벨 테스트는 불가하다. 이에 MySQL을 로컬에 설치하고 테스트를 진행하였다.
+- Serializable 은 shared lock을 걸어 10개 이상 요청 시 Dead Lock이 발생하였다.
 
 ## 테이블
 ### h2 console
@@ -34,11 +36,11 @@
 |modified_at|수정일자|timestamp|
 ```sql
 create table point (
-    user_id bigint unsinged not null auto_increment primary key comment '사용자 번호',
-    balance bigint unsigned not null comment '잔액',
-    point_history_id not null comment '포인트 이력 ID',
-    created_at timestamp not null default current_timestamp  comment '생성일자',
-    modified_at timestamp not null default current_timestamp on update current_timestamp comment '수정일자'
+user_id bigint unsigned not null auto_increment primary key comment '사용자 번호',
+balance bigint unsigned not null comment '잔액',
+point_history_id bigint unsigned not null comment '포인트 이력 ID',
+created_at timestamp not null default current_timestamp  comment '생성일자',
+modified_at timestamp not null default current_timestamp on update current_timestamp comment '수정일자'
 ) comment '포인트'
 ```
 ### point_history
@@ -54,11 +56,11 @@ create table point (
 | modified_at      | 수정일자         |timestamp|
 ```sql
 create table point_history (
-point_history_id unsinged not null auto_increment primary key comment '포인트 이력 ID'
-user_id bigint unsinged not null comment '사용자 번호',
+point_history_id bigint unsigned not null auto_increment primary key comment '포인트 이력 ID',
+user_id bigint unsigned not null comment '사용자 번호',
 balance bigint unsigned not null comment '잔액',
 point bigint unsigned not null comment '입/출금액',
-parent_point_history_id not null comment '전 입/출금 이력 ID',
+parent_point_history_id bigint unsigned not null comment '전 입/출금 이력 ID',
 transaction_type varchar(16) not null comment '트랙잭션 타입',
 created_at timestamp not null default current_timestamp  comment '생성일자',
 modified_at timestamp not null default current_timestamp on update current_timestamp comment '수정일자'

@@ -4,6 +4,7 @@ import com.alivetoday0.exception.NotExistsUserPoint;
 import com.alivetoday0.exception.NotWithdrawPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -20,9 +21,9 @@ public class PointServiceImpl implements PointService{
   }
 
   @Override
-  @Transactional
+  @Transactional(isolation = Isolation.SERIALIZABLE)
   public void deposit(final long userId, final long point) {
-    PointEntity existedPoint = pointRepository.findByUserId(userId)
+    PointEntity existedPoint = pointRepository.findById(userId)
         .orElseGet(() -> new PointEntity.FirstPointEntity(userId, point).create());
 
     if (existedPoint.isFirst()) {
@@ -38,17 +39,16 @@ public class PointServiceImpl implements PointService{
             point, existedPoint.getPointHistoryId());
     PointHistoryEntity savedPointHistory = pointHistoryRepository.save(newlyPointHistory);
 
-    PointEntity newlyPoint = PointEntity.create(userId, savedPointHistory.getBalance(),
+    PointEntity.update(existedPoint, savedPointHistory.getBalance(),
         savedPointHistory.getPointHistoryId());
-    pointRepository.save(newlyPoint);
   }
 
 
 
   @Override
-  @Transactional
+  @Transactional(isolation = Isolation.SERIALIZABLE)
   public void withdraw(long userId, long point) throws NotExistsUserPoint, NotWithdrawPoint {
-    PointEntity existedPoint = pointRepository.findByUserId(userId)
+    PointEntity existedPoint = pointRepository.findById(userId)
         .orElseThrow(() -> new NotExistsUserPoint("저장된 포인트가 없습니다."));
 
     long balance = existedPoint.getBalance() - point;
@@ -61,8 +61,7 @@ public class PointServiceImpl implements PointService{
             point, existedPoint.getPointHistoryId());
     PointHistoryEntity savedPointHistory = pointHistoryRepository.save(newlyPointHistory);
 
-    PointEntity newlyPoint = PointEntity.create(userId, savedPointHistory.getBalance(),
+    PointEntity.update(existedPoint, savedPointHistory.getBalance(),
         savedPointHistory.getPointHistoryId());
-    pointRepository.save(newlyPoint);
   }
 }
